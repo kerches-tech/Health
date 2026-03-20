@@ -1330,6 +1330,83 @@
   .scroll-top.show { opacity: 1; transform: translateY(0) scale(1); }
   .scroll-top:hover { background: var(--gold); color: var(--navy); border-color: var(--gold); }
 
+  /* WHATSAPP BUTTON */
+  .whatsapp-btn {
+    position: fixed;
+    bottom: 32px; left: 32px;
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: #25d366;
+    border-radius: 50px;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+    cursor: pointer;
+    text-decoration: none;
+    overflow: hidden;
+    max-width: 52px;
+    transition: max-width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.3s ease,
+                transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform: translateY(0) scale(1);
+    animation: wa-entrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 1s both;
+  }
+  @keyframes wa-entrance {
+    from { opacity: 0; transform: translateX(-24px) scale(0.8); }
+    to   { opacity: 1; transform: translateX(0) scale(1); }
+  }
+  .whatsapp-btn:hover {
+    max-width: 220px;
+    box-shadow: 0 8px 32px rgba(37,211,102,0.55);
+    transform: translateY(-2px);
+  }
+  .whatsapp-icon {
+    width: 52px; height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .whatsapp-icon svg {
+    width: 26px; height: 26px;
+    fill: white;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .whatsapp-btn:hover .whatsapp-icon svg { transform: scale(1.15) rotate(-8deg); }
+  .whatsapp-label {
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    padding-right: 18px;
+    opacity: 0;
+    transition: opacity 0.2s ease 0.15s;
+  }
+  .whatsapp-btn:hover .whatsapp-label { opacity: 1; }
+
+  /* Pulse ring on the icon */
+  .whatsapp-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50px;
+    box-shadow: 0 0 0 0 rgba(37,211,102,0.5);
+    animation: wa-pulse 2.5s ease-out infinite;
+    pointer-events: none;
+  }
+  @keyframes wa-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(37,211,102,0.45); }
+    70%  { box-shadow: 0 0 0 12px rgba(37,211,102,0); }
+    100% { box-shadow: 0 0 0 0 rgba(37,211,102,0); }
+  }
+
+  @media (max-width: 640px) {
+    .whatsapp-btn { bottom: 20px; left: 20px; max-width: 46px; }
+    .whatsapp-icon { width: 46px; height: 46px; }
+    .whatsapp-icon svg { width: 22px; height: 22px; }
+  }
+
   /* Hero badge pulse ring */
   .hero-badge { position: relative; }
   @keyframes badge-ring {
@@ -1559,17 +1636,18 @@
   }
 
   /* SCROLL PROGRESS INDICATOR */
+  /* SCROLL PROGRESS — lives inside sticky nav, always visible */
   .scroll-progress {
-    position: fixed;
-    top: 0; left: 0;
+    position: absolute;
+    bottom: 0; left: 0;
     height: 3px;
     width: 0%;
     background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%);
     background-size: 200% 100%;
-    z-index: 10000;
     animation: progress-shimmer 2s linear infinite;
     pointer-events: none;
-    transition: width 0.1s linear;
+    transition: width 0.12s linear;
+    z-index: 101;
   }
   @keyframes progress-shimmer {
     0%   { background-position: 200% center; }
@@ -1752,9 +1830,18 @@
 </head>
 <body>
 <div class="page-load-bar" id="pageLoadBar"></div>
-<div class="scroll-progress" id="scrollProgress"></div>
 <div class="cursor-glow" id="cursorGlow"></div>
 <button class="scroll-top" id="scrollTop" aria-label="Back to top">&#8593;</button>
+
+<!-- WHATSAPP BUTTON -->
+<a class="whatsapp-btn" href="https://wa.me/447400000000" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+  <span class="whatsapp-icon">
+    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 1C7.716 1 1 7.716 1 16c0 2.628.676 5.1 1.864 7.254L1 31l7.95-1.832A14.938 14.938 0 0 0 16 31c8.284 0 15-6.716 15-15S24.284 1 16 1zm0 27.4a12.34 12.34 0 0 1-6.3-1.726l-.452-.268-4.716 1.088 1.12-4.6-.296-.472A12.36 12.36 0 0 1 3.6 16C3.6 9.146 9.146 3.6 16 3.6S28.4 9.146 28.4 16 22.854 28.4 16 28.4zm6.77-9.232c-.37-.186-2.19-1.08-2.53-1.202-.34-.124-.586-.186-.832.186-.248.37-.958 1.202-1.174 1.45-.216.248-.432.278-.802.092-.37-.186-1.562-.576-2.976-1.836-1.1-.98-1.842-2.19-2.058-2.56-.216-.37-.022-.57.162-.754.166-.166.37-.432.556-.648.186-.216.248-.37.37-.618.124-.248.062-.464-.03-.65-.094-.186-.834-2.008-1.142-2.748-.3-.72-.606-.622-.834-.634-.216-.01-.464-.012-.71-.012a1.36 1.36 0 0 0-.988.464c-.34.37-1.296 1.266-1.296 3.088s1.328 3.582 1.512 3.83c.186.248 2.612 3.99 6.332 5.594.884.382 1.574.61 2.11.78.886.282 1.692.242 2.33.146.71-.106 2.19-.896 2.5-1.76.308-.864.308-1.606.216-1.76-.09-.154-.338-.248-.708-.432z"/>
+    </svg>
+  </span>
+  <span class="whatsapp-label">Chat with us</span>
+</a>
 
 <!-- TOP BAR -->
 <div class="topbar">
@@ -1808,6 +1895,7 @@
       <li><a href="#" class="nav-cta">Book Appointment</a></li>
     </ul>
   </div>
+  <div class="scroll-progress" id="scrollProgress"></div>
 </nav>
 
 <!-- HERO SLIDER -->
