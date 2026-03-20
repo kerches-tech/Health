@@ -908,6 +908,36 @@
   }
   .carousel-dot.active { background: var(--gold); width: 40px; }
 
+  /* Autoplay progress ring on active dot */
+  .carousel-dot.active {
+    background: var(--gold);
+    width: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .carousel-dot.active::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%;
+    width: 0%;
+    background: rgba(255,255,255,0.4);
+    animation: dot-progress 3s linear forwards;
+  }
+  @keyframes dot-progress {
+    from { width: 0%; }
+    to   { width: 100%; }
+  }
+
+  /* Never show disabled state — infinite loop */
+  .carousel-arrow:disabled { opacity: 1 !important; cursor: pointer !important; }
+  .carousel-arrow:disabled:hover { background: var(--gold) !important; border-color: var(--gold) !important; color: var(--navy) !important; }
+
+  /* Autoplay pause indicator */
+  .doctors-carousel-wrap:hover .carousel-arrows .carousel-arrow {
+    border-color: rgba(255,255,255,0.3);
+  }
+
   /* CTA BAND */
   .cta-band {
     background: var(--gold);
@@ -2506,83 +2536,191 @@
   startAutoplay();
 
   // =====================
-  // DOCTORS CAROUSEL
+  // DOCTORS AUTO-SLIDER
   // =====================
-  const track = document.getElementById('doctorsTrack');
-  const dotsContainer = document.getElementById('carouselDots');
-  const cards = track.querySelectorAll('.doctor-card');
-  let carouselPos = 0, isDragging = false, startX = 0, startPos = 0;
-  let numDots = 0, activeDot = 0;
+  (function () {
+    const carousel   = document.getElementById('doctorsCarousel');
+    const track      = document.getElementById('doctorsTrack');
+    const dotsWrap   = document.getElementById('carouselDots');
+    const btnPrev    = document.getElementById('docPrev');
+    const btnNext    = document.getElementById('docNext');
 
-  function getVisible() {
-    const w = window.innerWidth;
-    if (w < 480) return 1.2;
-    if (w < 768) return 2.1;
-    if (w < 1024) return 2.8;
-    return 4;
-  }
+    // ── Clone cards for infinite loop ──────────────────────────────────────
+    const origCards  = Array.from(track.querySelectorAll('.doctor-card'));
+    const ORIG_COUNT = origCards.length;
 
-  function buildDots() {
-    dotsContainer.innerHTML = '';
-    const visible = Math.floor(getVisible());
-    numDots = Math.max(1, cards.length - visible + 1);
-    for (let i = 0; i < numDots; i++) {
-      const d = document.createElement('button');
-      d.className = 'carousel-dot' + (i === 0 ? ' active' : '');
-      d.addEventListener('click', () => scrollToCard(i));
-      dotsContainer.appendChild(d);
+    // Prepend clones of last N + append clones of first N
+    const CLONE_COUNT = ORIG_COUNT; // full set on each side
+    const headClones = origCards.slice(-CLONE_COUNT).map(c => { const cl = c.cloneNode(true); cl.setAttribute('aria-hidden','true'); return cl; });
+    const tailClones = origCards.slice(0, CLONE_COUNT).map(c => { const cl = c.cloneNode(true); cl.setAttribute('aria-hidden','true'); return cl; });
+    headClones.forEach(c => track.insertBefore(c, track.firstChild));
+    tailClones.forEach(c => track.appendChild(c));
+
+    const allCards   = Array.from(track.querySelectorAll('.doctor-card'));
+    let activeDot    = 0;
+    let numDots      = 0;
+    let currentIdx   = CLONE_COUNT; // real cards start at CLONE_COUNT
+    let isAnimating  = false;
+    let autoTimer    = null;
+    let isDragging   = false, dragStartX = 0, dragStartPos = 0;
+    const AUTO_DELAY = 3000;
+    const TRANS_DUR  = 520;
+
+    function getVisible() {
+      const w = window.innerWidth;
+      if (w < 480)  return 1;
+      if (w < 768)  return 2;
+      if (w < 1024) return 3;
+      return 4;
     }
-  }
 
-  function updateDots(index) {
-    activeDot = index;
-    dotsContainer.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === index));
-    document.getElementById('docPrev').disabled = index === 0;
-    document.getElementById('docNext').disabled = index >= numDots - 1;
-  }
+    function getCardW() {
+      return allCards[0].offsetWidth + 20; // card + gap
+    }
 
-  function getCardWidth() { return cards[0].offsetWidth + 20; }
+    // ── Dots ────────────────────────────────────────────────────────────────
+    function buildDots() {
+      dotsWrap.innerHTML = '';
+      const vis = Math.floor(getVisible());
+      numDots   = Math.max(1, ORIG_COUNT - vis + 1);
+      for (let i = 0; i < numDots; i++) {
+        const d = document.createElement('button');
+        d.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+        d.addEventListener('click', () => { stopAuto(); goTo(CLONE_COUNT + i, i); startAuto(); });
+        dotsWrap.appendChild(d);
+      }
+    }
 
-  function scrollToCard(index) {
-    index = Math.max(0, Math.min(index, numDots - 1));
-    carouselPos = index * getCardWidth();
-    track.style.transform = `translateX(-${carouselPos}px)`;
-    updateDots(index);
-  }
+    function updateDots(dotIdx) {
+      activeDot = Math.max(0, Math.min(dotIdx, numDots - 1));
+      dotsWrap.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === activeDot));
+    }
 
-  document.getElementById('docNext').addEventListener('click', () => scrollToCard(activeDot + 1));
-  document.getElementById('docPrev').addEventListener('click', () => scrollToCard(activeDot - 1));
+    // ── Core move ───────────────────────────────────────────────────────────
+    function setPos(px, animate) {
+      track.style.transition = animate
+        ? `transform ${TRANS_DUR}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`
+        : 'none';
+      track.style.transform = `translateX(-${px}px)`;
+    }
 
-  track.addEventListener('mousedown', e => {
-    isDragging = true; startX = e.pageX; startPos = carouselPos;
-    track.classList.add('dragging'); e.preventDefault();
-  });
-  window.addEventListener('mousemove', e => {
-    if (isDragging) track.style.transform = `translateX(-${startPos + startX - e.pageX}px)`;
-  });
-  window.addEventListener('mouseup', e => {
-    if (!isDragging) return;
-    isDragging = false; track.classList.remove('dragging');
-    const diff = startX - e.pageX;
-    scrollToCard(Math.abs(diff) > getCardWidth() / 4 ? (diff > 0 ? activeDot + 1 : activeDot - 1) : activeDot);
-  });
+    function goTo(idx, dotIdx) {
+      if (isAnimating) return;
+      isAnimating = true;
+      currentIdx = idx;
+      setPos(idx * getCardW(), true);
+      updateDots(dotIdx !== undefined ? dotIdx : idx - CLONE_COUNT);
+      setTimeout(() => {
+        // Jump silently if we hit a clone boundary
+        if (currentIdx < CLONE_COUNT) {
+          currentIdx = CLONE_COUNT + ORIG_COUNT - 1;
+          setPos(currentIdx * getCardW(), false);
+        } else if (currentIdx >= CLONE_COUNT + ORIG_COUNT) {
+          currentIdx = CLONE_COUNT;
+          setPos(currentIdx * getCardW(), false);
+        }
+        isAnimating = false;
+      }, TRANS_DUR + 10);
+    }
 
-  track.addEventListener('touchstart', e => {
-    startX = e.touches[0].clientX; startPos = carouselPos;
-    track.classList.add('dragging');
-  }, { passive: true });
-  track.addEventListener('touchmove', e => {
-    track.style.transform = `translateX(-${startPos + startX - e.touches[0].clientX}px)`;
-  }, { passive: true });
-  track.addEventListener('touchend', e => {
-    track.classList.remove('dragging');
-    const diff = startX - e.changedTouches[0].clientX;
-    scrollToCard(Math.abs(diff) > getCardWidth() / 4 ? (diff > 0 ? activeDot + 1 : activeDot - 1) : activeDot);
-  });
+    function next() {
+      const realIdx  = currentIdx - CLONE_COUNT;
+      const nextDot  = (realIdx + 1) % ORIG_COUNT < numDots ? (realIdx + 1) % ORIG_COUNT : activeDot;
+      goTo(currentIdx + 1, (activeDot + 1) % numDots);
+    }
 
-  function initCarousel() { buildDots(); scrollToCard(0); }
-  window.addEventListener('resize', () => { buildDots(); scrollToCard(0); });
-  initCarousel();
+    function prev() {
+      goTo(currentIdx - 1, (activeDot - 1 + numDots) % numDots);
+    }
+
+    // ── Autoplay ────────────────────────────────────────────────────────────
+    function startAuto() {
+      stopAuto();
+      autoTimer = setInterval(next, AUTO_DELAY);
+    }
+    function stopAuto() { clearInterval(autoTimer); }
+
+    // ── Arrows ──────────────────────────────────────────────────────────────
+    btnPrev.addEventListener('click', () => { stopAuto(); prev(); startAuto(); });
+    btnNext.addEventListener('click', () => { stopAuto(); next(); startAuto(); });
+
+    // ── Pause on hover ──────────────────────────────────────────────────────
+    carousel.addEventListener('mouseenter', stopAuto);
+    carousel.addEventListener('mouseleave', startAuto);
+
+    // ── Drag (mouse) ────────────────────────────────────────────────────────
+    track.addEventListener('mousedown', e => {
+      if (isAnimating) return;
+      stopAuto();
+      isDragging   = true;
+      dragStartX   = e.pageX;
+      dragStartPos = currentIdx * getCardW();
+      track.style.transition = 'none';
+      track.classList.add('dragging');
+      e.preventDefault();
+    });
+    window.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      const dx = dragStartX - e.pageX;
+      track.style.transform = `translateX(-${dragStartPos + dx}px)`;
+    });
+    window.addEventListener('mouseup', e => {
+      if (!isDragging) return;
+      isDragging = false;
+      track.classList.remove('dragging');
+      const diff = dragStartX - e.pageX;
+      if (Math.abs(diff) > getCardW() / 5) {
+        diff > 0 ? next() : prev();
+      } else {
+        goTo(currentIdx, activeDot);
+      }
+      startAuto();
+    });
+
+    // ── Drag (touch) ────────────────────────────────────────────────────────
+    track.addEventListener('touchstart', e => {
+      if (isAnimating) return;
+      stopAuto();
+      dragStartX   = e.touches[0].clientX;
+      dragStartPos = currentIdx * getCardW();
+      track.style.transition = 'none';
+      track.classList.add('dragging');
+    }, { passive: true });
+    track.addEventListener('touchmove', e => {
+      const dx = dragStartX - e.touches[0].clientX;
+      track.style.transform = `translateX(-${dragStartPos + dx}px)`;
+    }, { passive: true });
+    track.addEventListener('touchend', e => {
+      track.classList.remove('dragging');
+      const diff = dragStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > getCardW() / 5) {
+        diff > 0 ? next() : prev();
+      } else {
+        goTo(currentIdx, activeDot);
+      }
+      startAuto();
+    });
+
+    // ── Init ────────────────────────────────────────────────────────────────
+    function init() {
+      buildDots();
+      setPos(currentIdx * getCardW(), false);
+      updateDots(0);
+      // Remove disable logic from arrows (infinite loop — never disabled)
+      btnPrev.disabled = false;
+      btnNext.disabled = false;
+      startAuto();
+    }
+
+    window.addEventListener('resize', () => {
+      stopAuto();
+      buildDots();
+      setPos(currentIdx * getCardW(), false);
+      startAuto();
+    });
+
+    init();
+  })();
 
   // =====================
   // HAMBURGER MENU
