@@ -92,30 +92,24 @@ nav { background:white; border-bottom:1px solid #e8e2d8; position:sticky; top:0;
   flex-shrink:0;
   position:relative;
 }
+/* Desktop: always open */
 .filter-search-box {
-  width:0;
-  max-width:0;
+  max-width:240px;
+  width:240px;
+  opacity:1;
   overflow:hidden;
-  opacity:0;
-  transition:max-width .4s cubic-bezier(.22,1,.36,1), opacity .3s ease, padding .3s;
   background:var(--cream);
-  border:1.5px solid transparent;
+  border:1.5px solid #e8e2d8;
   border-radius:0 30px 30px 0;
   font-family:'DM Sans',sans-serif;
   font-size:13px;
   color:var(--text-dark);
-  padding:0;
+  padding:8px 16px;
   outline:none;
   order:2;
+  transition:border-color .25s, background .25s;
 }
-.filter-search-box.open {
-  max-width:220px;
-  width:220px;
-  opacity:1;
-  border-color:#e8e2d8;
-  padding:8px 16px;
-}
-.filter-search-box.open:focus {
+.filter-search-box:focus {
   border-color:var(--gold);
   background:white;
 }
@@ -126,19 +120,19 @@ nav { background:white; border-bottom:1px solid #e8e2d8; position:sticky; top:0;
   justify-content:center;
   width:42px;
   height:42px;
-  background:var(--navy);
+  background:var(--gold);
   border:none;
-  border-radius:50%;
-  cursor:pointer;
+  border-radius:30px 0 0 30px;
+  cursor:default;
   flex-shrink:0;
   order:1;
-  transition:background .25s, transform .2s cubic-bezier(.34,1.56,.64,1), border-radius .3s;
-  box-shadow:0 4px 14px rgba(10,22,40,.2);
+  box-shadow:0 4px 14px rgba(10,22,40,.15);
+  transition:background .25s;
 }
-.filter-search-btn:hover { background:var(--navy-light); transform:scale(1.08); }
-.filter-search-btn svg { stroke:white; transition:transform .25s; }
+.filter-search-btn svg { stroke:white; }
+/* hide the X/close rotation on desktop since it stays open */
 .filter-search-btn.active { background:var(--gold); border-radius:30px 0 0 30px; }
-.filter-search-btn.active svg { transform:rotate(90deg); stroke:var(--navy); }
+.filter-search-btn.active svg { transform:none; stroke:white; }
 
 /* No results message */
 .no-results {
@@ -335,7 +329,34 @@ footer p { font-size:13.5px; line-height:1.75; font-weight:300; }
   .page-hero h1{font-size:36px;}
   .hero-stats-grid{grid-template-columns:repeat(2,1fr);}
   .filter-inner{padding:12px 20px;}
-  .filter-search-box.open { max-width:160px; width:160px; }
+  /* Mobile: search collapsed by default, expands on click */
+  .filter-search-box {
+    max-width:0;
+    width:0;
+    opacity:0;
+    border-color:transparent;
+    padding:0;
+    transition:max-width .4s cubic-bezier(.22,1,.36,1), opacity .3s, padding .3s, border-color .3s;
+  }
+  .filter-search-box.open {
+    max-width:160px;
+    width:160px;
+    opacity:1;
+    border-color:#e8e2d8;
+    padding:8px 14px;
+  }
+  .filter-search-box.open:focus { border-color:var(--gold); background:white; }
+  .filter-search-btn {
+    cursor:pointer;
+    background:var(--navy);
+    border-radius:50%;
+    box-shadow:0 4px 14px rgba(10,22,40,.2);
+    transition:background .25s, transform .2s cubic-bezier(.34,1.56,.64,1), border-radius .3s;
+  }
+  .filter-search-btn:hover { background:var(--navy-light); transform:scale(1.08); }
+  .filter-search-btn svg { stroke:white; transition:transform .25s; }
+  .filter-search-btn.active { background:var(--gold); border-radius:30px 0 0 30px; }
+  .filter-search-btn.active svg { transform:rotate(90deg); stroke:var(--navy); }
   .container{padding:0 20px;}
   .grid-3{grid-template-columns:1fr;}
   .steps-grid{grid-template-columns:1fr;}
@@ -872,10 +893,17 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 const searchBtn  = document.getElementById('svcSearchBtn');
 const searchBox  = document.getElementById('svcSearch');
 
+const isMobile = () => window.innerWidth <= 640;
+
 searchBtn.addEventListener('click', () => {
+  if (!isMobile()) {
+    // Desktop: button is decorative — just focus the input
+    searchBox.focus();
+    return;
+  }
+  // Mobile: toggle open/close
   const isOpen = searchBox.classList.contains('open');
   if (isOpen) {
-    // Close & clear search → restore current filter
     searchBox.classList.remove('open');
     searchBtn.classList.remove('active');
     searchBox.value = '';
@@ -899,13 +927,16 @@ searchBox.addEventListener('input', () => {
   runSearch(term);
 });
 
-// Allow Escape to close search
+// Allow Escape to clear search (and close on mobile)
 searchBox.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     searchBox.value = '';
-    searchBox.classList.remove('open');
-    searchBtn.classList.remove('active');
+    if (isMobile()) {
+      searchBox.classList.remove('open');
+      searchBtn.classList.remove('active');
+    }
     applyFilter(currentFilter);
+    searchBox.blur();
   }
 });
 
@@ -959,11 +990,12 @@ function runSearch(term) {
 // Category filter buttons
 document.querySelectorAll('.filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    // Clear search when a category is picked
+    // Clear search — on mobile also close the box
     searchBox.value = '';
-    searchBox.classList.remove('open');
-    searchBtn.classList.remove('active');
-
+    if (isMobile()) {
+      searchBox.classList.remove('open');
+      searchBtn.classList.remove('active');
+    }
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     currentFilter = btn.dataset.filter;
