@@ -57,7 +57,7 @@
   .topbar-item a { color: inherit; text-decoration: none; }
   .topbar-item a:hover { color: var(--gold-light); }
   .topbar-right {
-    background: #c0392b;
+    background: #b8945a;
     color: white;
     padding: 5px 18px;
     border-radius: 2px;
@@ -193,8 +193,8 @@
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
     background-size: 80px 80px;
     z-index: 1;
   }
@@ -383,7 +383,7 @@
   /* QUICK LINKS BAR */
   .quick-links {
     background: var(--cream);
-    border-bottom: 1px solid #e5dfd5;
+    border-bottom: 1px solid #e8e2d8;
   }
   .quick-links-inner {
     max-width: 1280px;
@@ -399,7 +399,7 @@
     padding: 26px 24px;
     text-decoration: none;
     color: var(--text-dark);
-    border-right: 1px solid #e5dfd5;
+    border-right: 1px solid #e8e2d8;
     transition: background 0.2s;
   }
   .quick-link:last-child { border-right: none; }
@@ -820,26 +820,62 @@
     border-color: rgba(184,148,90,0.4);
     box-shadow: 0 16px 40px rgba(0,0,0,0.3);
   }
-  .doctor-img-placeholder {
+  .doctor-img-wrap {
     width: 100%;
-    height: 240px;
+    height: 260px;
+    overflow: hidden;
+    position: relative;
     background: linear-gradient(135deg, var(--navy-mid), var(--navy-light));
+  }
+  /* The actual doctor photo — swap src to change the image */
+  .doctor-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .doctor-card:hover .doctor-img-wrap img { transform: scale(1.05); }
+  /* Bottom gradient fade */
+  .doctor-img-wrap::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 55%;
+    background: linear-gradient(to top, rgba(10,22,40,0.7), transparent);
+    pointer-events: none;
+  }
+  /* Fallback shown when no real image is provided */
+  .doctor-img-wrap .doctor-img-fallback {
+    position: absolute;
+    inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: 'Cormorant Garamond', serif;
-    font-size: 48px;
-    color: rgba(184,148,90,0.25);
-    position: relative;
-    overflow: hidden;
+    font-size: 52px;
+    color: rgba(184,148,90,0.3);
+    z-index: 0;
   }
-  .doctor-img-placeholder::after {
-    content: '';
+  .doctor-img-wrap img[src] ~ .doctor-img-fallback { display: none; }
+  /* Gold "change photo" badge visible on hover (for editing reference) */
+  .doctor-img-wrap .doctor-img-badge {
     position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 60%;
-    background: linear-gradient(to top, rgba(10,22,40,0.5), transparent);
+    top: 12px; right: 12px;
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 9px;
+    border-radius: 2px;
+    z-index: 3;
+    opacity: 0;
+    transition: opacity 0.2s;
   }
+  .doctor-card:hover .doctor-img-badge { opacity: 1; }
   .doctor-info { padding: 20px 22px 24px; }
   .doctor-info h3 {
     font-family: 'Cormorant Garamond', serif;
@@ -1072,7 +1108,7 @@
     font-size: 10px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: #e74c3c;
+    color: #d4ae7a;
     margin-bottom: 6px;
   }
   .emergency-num {
@@ -1507,7 +1543,7 @@
     100% { background-position: 200% center; }
   }
   .topbar-right {
-    background: linear-gradient(90deg, #c0392b, #e74c3c, #c0392b);
+    background: linear-gradient(90deg, #b8945a, #d4ae7a, #b8945a);
     background-size: 200%;
     animation: shimmer-slide 3s linear infinite;
   }
@@ -1637,10 +1673,10 @@
     /* Doctors carousel */
     .doctor-card { flex: 0 0 calc(50% - 10px); min-width: 180px; }
     .doctors-header { flex-direction: column; align-items: flex-start; gap: 12px; }
-    .doctor-img-placeholder { height: 200px; font-size: 36px; }
+    .doctor-img-wrap { height: 200px; }
     .quick-links-inner { grid-template-columns: 1fr 1fr; padding: 0; }
-    .quick-link { padding: 18px 14px; gap: 10px; border-bottom: 1px solid #e5dfd5; }
-    .quick-link:nth-child(odd) { border-right: 1px solid #e5dfd5; }
+    .quick-link { padding: 18px 14px; gap: 10px; border-bottom: 1px solid #e8e2d8; }
+    .quick-link:nth-child(odd) { border-right: 1px solid #e8e2d8; }
     .quick-link:last-child { border-right: none; }
     .quick-link-icon { width: 36px; height: 36px; }
     .quick-link-sub { display: none; }
@@ -1909,7 +1945,7 @@
 </a>
 
 <!-- WHATSAPP BUTTON -->
-<a class="whatsapp-btn" href="https://wa.me/447400000000" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+<a class="whatsapp-btn" href="https://wa.me/02074839100" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
   <span class="whatsapp-icon">
     <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
       <path d="M16 1C7.716 1 1 7.716 1 16c0 2.628.676 5.1 1.864 7.254L1 31l7.95-1.832A14.938 14.938 0 0 0 16 31c8.284 0 15-6.716 15-15S24.284 1 16 1zm0 27.4a12.34 12.34 0 0 1-6.3-1.726l-.452-.268-4.716 1.088 1.12-4.6-.296-.472A12.36 12.36 0 0 1 3.6 16C3.6 9.146 9.146 3.6 16 3.6S28.4 9.146 28.4 16 22.854 28.4 16 28.4zm6.77-9.232c-.37-.186-2.19-1.08-2.53-1.202-.34-.124-.586-.186-.832.186-.248.37-.958 1.202-1.174 1.45-.216.248-.432.278-.802.092-.37-.186-1.562-.576-2.976-1.836-1.1-.98-1.842-2.19-2.058-2.56-.216-.37-.022-.57.162-.754.166-.166.37-.432.556-.648.186-.216.248-.37.37-.618.124-.248.062-.464-.03-.65-.094-.186-.834-2.008-1.142-2.748-.3-.72-.606-.622-.834-.634-.216-.01-.464-.012-.71-.012a1.36 1.36 0 0 0-.988.464c-.34.37-1.296 1.266-1.296 3.088s1.328 3.582 1.512 3.83c.186.248 2.612 3.99 6.332 5.594.884.382 1.574.61 2.11.78.886.282 1.692.242 2.33.146.71-.106 2.19-.896 2.5-1.76.308-.864.308-1.606.216-1.76-.09-.154-.338-.248-.708-.432z"/>
@@ -1932,7 +1968,7 @@
       </div>
       <div class="topbar-item">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        <a href="/cdn-cgi/l/email-protection#2a43444c456a474f58434e434b44474f4e43494b46044945045f41"><span class="__cf_email__" data-cfemail="4821262e2708252d3a212c212926252d2c212b2924662b27663d23">[email&#160;protected]</span></a>
+        <a href="mailto:info@meridianmedical.co.uk"><span class="__cf_email__" data-cfemail="4821262e2708252d3a212c212926252d2c212b2924662b27663d23">[email&#160;protected]</span></a>
       </div>
     </div>
     <div class="topbar-right">
@@ -1946,10 +1982,13 @@
 <nav>
   <div class="nav-inner">
     <a href="#" class="logo">
-      <div class="logo-mark">
-        <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M13 3 L13 23 M3 13 L23 13" stroke="#b8945a" stroke-width="2.5" stroke-linecap="round"/>
-          <rect x="7" y="7" width="12" height="12" rx="2" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+      <div class="logo-mark" style="background:none;padding:0;">
+        
+        <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" width="44" height="44">
+          <rect width="44" height="44" rx="6" fill="#0a1628"/>
+          <rect x="18" y="7" width="8" height="30" rx="2" fill="#b8945a"/>
+          <rect x="7" y="18" width="30" height="8" rx="2" fill="#b8945a"/>
+          <rect x="18" y="18" width="8" height="8" rx="1" fill="white"/>
         </svg>
       </div>
       <div class="logo-text">
@@ -2501,8 +2540,16 @@
       <div class="doctors-carousel" id="doctorsCarousel">
         <div class="doctors-track" id="doctorsTrack">
 
+          <!-- ═══════════════════════════════════════════
+               DOCTOR 1 — Change the src below to swap photo
+               Recommended: square or portrait, min 400×500px
+          ═══════════════════════════════════════════ -->
           <div class="doctor-card">
-            <div class="doctor-img-placeholder">Dr</div>
+            <div class="doctor-img-wrap">
+              <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=500&auto=format&fit=crop&q=80&crop=top" alt="Dr. Sarah Okonkwo — Cardiologist" />
+              <div class="doctor-img-fallback">Dr</div>
+              <span class="doctor-img-badge">Change Photo</span>
+            </div>
             <div class="doctor-info">
               <h3>Dr. Sarah Okonkwo</h3>
               <div class="doctor-specialty">Cardiology</div>
@@ -2511,8 +2558,15 @@
             </div>
           </div>
 
+          <!-- ═══════════════════════════════════════════
+               DOCTOR 2 — Change the src below to swap photo
+          ═══════════════════════════════════════════ -->
           <div class="doctor-card">
-            <div class="doctor-img-placeholder">Dr</div>
+            <div class="doctor-img-wrap">
+              <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=500&auto=format&fit=crop&q=80&crop=top" alt="Prof. James Adeyemi — Neurosurgeon" />
+              <div class="doctor-img-fallback">Dr</div>
+              <span class="doctor-img-badge">Change Photo</span>
+            </div>
             <div class="doctor-info">
               <h3>Prof. James Adeyemi</h3>
               <div class="doctor-specialty">Neurosurgery</div>
@@ -2521,8 +2575,15 @@
             </div>
           </div>
 
+          <!-- ═══════════════════════════════════════════
+               DOCTOR 3 — Change the src below to swap photo
+          ═══════════════════════════════════════════ -->
           <div class="doctor-card">
-            <div class="doctor-img-placeholder">Dr</div>
+            <div class="doctor-img-wrap">
+              <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=500&auto=format&fit=crop&q=80&crop=top" alt="Dr. Priya Sharma — Obs & Gynaecology" />
+              <div class="doctor-img-fallback">Dr</div>
+              <span class="doctor-img-badge">Change Photo</span>
+            </div>
             <div class="doctor-info">
               <h3>Dr. Priya Sharma</h3>
               <div class="doctor-specialty">Obs & Gynaecology</div>
@@ -2531,8 +2592,15 @@
             </div>
           </div>
 
+          <!-- ═══════════════════════════════════════════
+               DOCTOR 4 — Change the src below to swap photo
+          ═══════════════════════════════════════════ -->
           <div class="doctor-card">
-            <div class="doctor-img-placeholder">Dr</div>
+            <div class="doctor-img-wrap">
+              <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=500&auto=format&fit=crop&q=80&crop=top" alt="Dr. Michael Chen — Paediatrician" />
+              <div class="doctor-img-fallback">Dr</div>
+              <span class="doctor-img-badge">Change Photo</span>
+            </div>
             <div class="doctor-info">
               <h3>Dr. Michael Chen</h3>
               <div class="doctor-specialty">Paediatrics</div>
@@ -2541,8 +2609,15 @@
             </div>
           </div>
 
+          <!-- ═══════════════════════════════════════════
+               DOCTOR 5 — Change the src below to swap photo
+          ═══════════════════════════════════════════ -->
           <div class="doctor-card">
-            <div class="doctor-img-placeholder">Dr</div>
+            <div class="doctor-img-wrap">
+              <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=500&auto=format&fit=crop&q=80&crop=top" alt="Dr. Amara Mensah — Orthopaedic Surgeon" />
+              <div class="doctor-img-fallback">Dr</div>
+              <span class="doctor-img-badge">Change Photo</span>
+            </div>
             <div class="doctor-info">
               <h3>Dr. Amara Mensah</h3>
               <div class="doctor-specialty">Orthopaedics</div>
@@ -2551,8 +2626,15 @@
             </div>
           </div>
 
+          <!-- ═══════════════════════════════════════════
+               DOCTOR 6 — Change the src below to swap photo
+          ═══════════════════════════════════════════ -->
           <div class="doctor-card">
-            <div class="doctor-img-placeholder">Dr</div>
+            <div class="doctor-img-wrap">
+              <img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=500&auto=format&fit=crop&q=80&crop=top" alt="Dr. Kwame Asante — Urologist" />
+              <div class="doctor-img-fallback">Dr</div>
+              <span class="doctor-img-badge">Change Photo</span>
+            </div>
             <div class="doctor-info">
               <h3>Dr. Kwame Asante</h3>
               <div class="doctor-specialty">Urology</div>
