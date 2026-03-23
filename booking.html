@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book an Appointment — Meridian Hospital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0a1628;--navy-mid:#122040;--navy-light:#1a3060;--gold:#b8945a;--gold-light:#d4ae7a;--cream:#f7f4ef;--warm-white:#fdfcfa;--text-dark:#1a1a2e;--text-mid:#4a5568;--text-light:#718096;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;color:var(--text-dark);background:var(--warm-white);overflow-x:hidden;}
+
+/* TOPBAR */
+.topbar{background:var(--navy);color:rgba(255,255,255,.75);font-size:12.5px;padding:9px 0;border-bottom:1px solid rgba(184,148,90,.3);}
+.topbar-inner{max-width:1280px;margin:0 auto;padding:0 40px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;}
+.topbar-left{display:flex;gap:28px;align-items:center;}
+.topbar-item{display:flex;align-items:center;gap:7px;}
+.topbar-item svg{opacity:.6;flex-shrink:0;}
+.topbar-item a{color:inherit;text-decoration:none;}
+.topbar-item a:hover{color:var(--gold-light);}
+.topbar-right{background:#c0392b;color:white;padding:5px 18px;border-radius:2px;font-weight:500;font-size:12px;letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:8px;}
+.emergency-dot{width:7px;height:7px;background:white;border-radius:50%;animation:blink 1.4s infinite;}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+
+/* NAV */
+nav{background:white;border-bottom:1px solid #e8e2d8;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(10,22,40,.07);transition:box-shadow .3s;}
+nav.scrolled{box-shadow:0 4px 32px rgba(10,22,40,.14);}
+.nav-inner{max-width:1280px;margin:0 auto;padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:76px;position:relative;transition:height .3s;}
+nav.scrolled .nav-inner{height:62px;}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;min-width:0;overflow:hidden;}
+.logo-mark{width:44px;height:44px;background:var(--navy);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.logo-text{display:flex;flex-direction:column;justify-content:center;min-width:0;}
+.logo-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--navy);line-height:1;letter-spacing:.02em;white-space:nowrap;}
+.logo-sub{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:600;color:var(--gold);letter-spacing:.2em;text-transform:uppercase;margin-top:4px;white-space:nowrap;}
+.nav-links{display:flex;align-items:center;gap:6px;list-style:none;}
+.nav-links>li>a{color:var(--text-mid);text-decoration:none;font-size:13.5px;font-weight:500;padding:8px 12px;border-radius:4px;transition:color .2s,background .2s;display:block;position:relative;}
+.nav-links>li>a:not(.nav-cta)::after{content:'';position:absolute;bottom:4px;left:12px;right:12px;height:1.5px;background:var(--gold);transform:scaleX(0);transform-origin:center;transition:transform .25s;}
+.nav-links>li>a:not(.nav-cta):hover::after,.nav-links>li>a.active:not(.nav-cta)::after{transform:scaleX(1);}
+.nav-links>li>a:hover{color:var(--navy);background:var(--cream);}
+.nav-links>li>a.active{color:var(--navy);font-weight:600;}
+.nav-cta{background:var(--navy)!important;color:white!important;padding:10px 22px!important;border-radius:4px!important;transition:background .2s!important;}
+.nav-cta:hover{background:var(--navy-light)!important;}
+.nav-hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer;padding:4px;border-radius:4px;transition:background .2s;}
+.nav-hamburger:hover{background:var(--cream);}
+.nav-hamburger span{display:block;height:2px;background:var(--navy);border-radius:2px;transition:transform .3s,opacity .3s,width .3s;}
+.nav-hamburger span:nth-child(2){width:75%;}
+.nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.nav-hamburger.open span:nth-child(2){opacity:0;width:0;}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.scroll-progress{position:absolute;bottom:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--gold),var(--gold-light));pointer-events:none;transition:width .1s linear;z-index:10;}
+
+/* PAGE HERO */
+.page-hero{background:var(--navy);padding:72px 0 60px;position:relative;overflow:hidden;}
+.page-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:80px 80px;}
+.page-hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(184,148,90,.08) 0%,transparent 60%);}
+.hero-inner{max-width:1280px;margin:0 auto;padding:0 40px;position:relative;z-index:2;}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.45);letter-spacing:.08em;text-transform:uppercase;margin-bottom:22px;}
+.breadcrumb a{color:inherit;text-decoration:none;}
+.breadcrumb a:hover{color:var(--gold-light);}
+.breadcrumb-current{color:var(--gold-light);}
+.page-hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,62px);font-weight:300;color:white;line-height:1.1;margin-bottom:14px;}
+.page-hero h1 em{font-style:italic;color:var(--gold-light);}
+.hero-desc{color:rgba(255,255,255,.6);font-size:15.5px;line-height:1.75;font-weight:300;max-width:520px;}
+
+
+
+/* MAIN LAYOUT */
+.booking-section{padding:72px 0 88px;background:var(--warm-white);}
+.booking-layout{max-width:1280px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:1fr 400px;gap:56px;align-items:start;}
+
+/* STEP FORM */
+.booking-form-wrap{background:white;border-radius:14px;border:1px solid #ece7de;box-shadow:0 4px 40px rgba(10,22,40,.07);overflow:hidden;}
+
+/* STEP PROGRESS */
+.step-header{background:var(--navy);padding:28px 36px;}
+.step-progress{display:flex;align-items:center;gap:0;}
+.step-item{display:flex;align-items:center;gap:10px;flex:1;}
+.step-item:last-child{flex:0;}
+.step-circle{width:32px;height:32px;border-radius:50%;border:2px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:rgba(255,255,255,.4);flex-shrink:0;transition:all .35s;}
+.step-item.active .step-circle{border-color:var(--gold);background:var(--gold);color:var(--navy);}
+.step-item.done .step-circle{border-color:var(--gold);background:transparent;color:var(--gold);}
+.step-label{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.06em;text-transform:uppercase;font-weight:500;transition:color .3s;}
+.step-item.active .step-label{color:rgba(255,255,255,.9);}
+.step-item.done .step-label{color:var(--gold-light);}
+.step-line{flex:1;height:1px;background:rgba(255,255,255,.1);margin:0 10px;}
+.step-item.done + .step-item .step-line,.step-item.done .step-line{background:rgba(184,148,90,.4);}
+
+/* FORM PANELS */
+.form-panels{padding:36px 36px 32px;}
+.form-panel{display:none;}
+.form-panel.active{display:block;}
+.panel-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--navy);margin-bottom:6px;}
+.panel-desc{font-size:13.5px;color:var(--text-light);margin-bottom:28px;line-height:1.6;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.form-group{display:flex;flex-direction:column;gap:7px;margin-bottom:18px;}
+.form-group label{font-size:11.5px;font-weight:700;color:var(--navy);letter-spacing:.06em;text-transform:uppercase;}
+.form-group label .req{color:#c0392b;margin-left:2px;}
+.form-group input,.form-group select,.form-group textarea{font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text-dark);background:var(--cream);border:1.5px solid #e8e2d8;border-radius:6px;padding:11px 14px;outline:none;transition:border-color .22s,background .22s,box-shadow .22s;width:100%;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--gold);background:white;box-shadow:0 0 0 3px rgba(184,148,90,.1);}
+.form-group input.error,.form-group select.error,.form-group textarea.error{border-color:#e74c3c;background:#fff8f8;}
+.form-group input::placeholder,.form-group textarea::placeholder{color:var(--text-light);}
+.form-group select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer;}
+.form-group textarea{resize:vertical;min-height:110px;line-height:1.6;}
+.err-msg{font-size:11.5px;color:#e74c3c;margin-top:-12px;margin-bottom:6px;display:none;}
+.err-msg.show{display:block;}
+
+/* APPOINTMENT TYPE CARDS */
+.appt-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+.appt-card{border:1.5px solid #e8e2d8;border-radius:8px;padding:16px 14px;cursor:pointer;transition:all .22s;text-align:center;}
+.appt-card:hover{border-color:var(--gold);background:var(--cream);}
+.appt-card.selected{border-color:var(--navy);background:var(--navy);}
+.appt-card input{display:none;}
+.appt-card-icon{font-size:24px;margin-bottom:8px;display:block;}
+.appt-card-label{font-size:12px;font-weight:600;color:var(--navy);transition:color .22s;}
+.appt-card.selected .appt-card-label{color:white;}
+.appt-card-note{font-size:10.5px;color:var(--text-light);margin-top:3px;transition:color .22s;}
+.appt-card.selected .appt-card-note{color:rgba(255,255,255,.6);}
+
+/* DATE/TIME GRID */
+.time-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px;}
+.time-btn{border:1.5px solid #e8e2d8;border-radius:6px;padding:9px 6px;background:var(--cream);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--text-mid);cursor:pointer;transition:all .2s;text-align:center;}
+.time-btn:hover{border-color:var(--gold);color:var(--navy);background:white;}
+.time-btn.selected{background:var(--navy);border-color:var(--navy);color:white;}
+.time-btn.unavailable{opacity:.35;cursor:not-allowed;pointer-events:none;}
+
+/* CONSENT */
+.form-check{display:flex;align-items:flex-start;gap:10px;margin-bottom:20px;}
+.form-check input[type="checkbox"]{width:16px;height:16px;margin-top:2px;accent-color:var(--navy);flex-shrink:0;cursor:pointer;}
+.form-check label{font-size:13px;color:var(--text-mid);line-height:1.6;cursor:pointer;}
+.form-check label a{color:var(--gold);text-decoration:none;}
+
+/* REVIEW BOX */
+.review-box{background:var(--cream);border:1px solid #ece7de;border-radius:8px;padding:22px 20px;margin-bottom:24px;}
+.review-box h4{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--navy);margin-bottom:14px;font-weight:600;}
+.review-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e8e2d8;font-size:13.5px;}
+.review-row:last-child{border-bottom:none;padding-bottom:0;}
+.review-label{color:var(--text-light);}
+.review-val{font-weight:600;color:var(--navy);text-align:right;}
+
+/* NAVIGATION BUTTONS */
+.form-nav{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:20px;border-top:1px solid #ece7de;}
+.btn-back{background:none;border:1.5px solid #e8e2d8;color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:500;padding:11px 24px;border-radius:6px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:7px;}
+.btn-back:hover{border-color:var(--navy);color:var(--navy);}
+.btn-next,.btn-submit{background:var(--navy);color:white;border:none;font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:600;padding:12px 28px;border-radius:6px;cursor:pointer;transition:background .2s,transform .15s;display:flex;align-items:center;gap:8px;letter-spacing:.03em;}
+.btn-next:hover,.btn-submit:hover{background:var(--navy-light);transform:translateY(-1px);}
+.btn-submit{background:var(--gold);color:var(--navy);}
+.btn-submit:hover{background:var(--gold-light);}
+.btn-submit svg,.btn-next svg{transition:transform .25s cubic-bezier(.34,1.56,.64,1);}
+.btn-next:hover svg,.btn-submit:hover svg{transform:translateX(4px);}
+
+/* SUCCESS SCREEN */
+.success-screen{display:none;text-align:center;padding:60px 36px 52px;}
+.success-check{width:80px;height:80px;background:rgba(46,204,113,.1);border:2px solid rgba(46,204,113,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;}
+.success-screen h2{font-family:'Cormorant Garamond',serif;font-size:34px;color:var(--navy);margin-bottom:10px;}
+.success-screen p{font-size:14.5px;color:var(--text-mid);line-height:1.7;max-width:360px;margin:0 auto 24px;}
+.success-ref{background:var(--cream);border:1px solid #ece7de;border-radius:8px;padding:14px 20px;display:inline-block;margin-bottom:28px;}
+.success-ref span{font-size:11px;color:var(--text-light);letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:4px;}
+.success-ref strong{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--navy);}
+.btn-home{background:var(--navy);color:white;text-decoration:none;padding:12px 28px;border-radius:6px;font-weight:600;font-size:13.5px;display:inline-block;transition:background .2s;}
+.btn-home:hover{background:var(--navy-light);}
+
+/* SIDEBAR */
+.booking-sidebar{display:flex;flex-direction:column;gap:20px;position:sticky;top:100px;}
+.sidebar-card{background:white;border-radius:10px;border:1px solid #ece7de;padding:24px 22px;}
+.sidebar-card h3{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--navy);margin-bottom:16px;}
+.sidebar-list{list-style:none;display:flex;flex-direction:column;gap:12px;}
+.sidebar-list li{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--text-mid);line-height:1.5;}
+.sidebar-check{width:18px;height:18px;background:rgba(46,204,113,.12);border:1px solid rgba(46,204,113,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.sidebar-check svg{stroke:#2ecc71;}
+.contact-card{background:var(--navy);color:white;}
+.contact-card h3{color:white;}
+.contact-item{display:flex;align-items:center;gap:10px;margin-bottom:14px;font-size:13.5px;color:rgba(255,255,255,.7);}
+.contact-item:last-child{margin-bottom:0;}
+.contact-item svg{opacity:.6;flex-shrink:0;}
+.contact-item a{color:inherit;text-decoration:none;}
+.contact-item a:hover{color:var(--gold-light);}
+.emerg-mini{background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.3);border-radius:4px;padding:11px 14px;margin-top:16px;display:flex;align-items:center;gap:10px;}
+.emerg-mini-dot{width:8px;height:8px;background:#e74c3c;border-radius:50%;flex-shrink:0;animation:blink 1.2s infinite;}
+.emerg-mini-text{font-size:12px;color:rgba(255,255,255,.7);line-height:1.4;}
+.emerg-mini-text strong{color:#ff6b6b;display:block;font-size:14px;}
+.trust-badges{display:flex;gap:10px;flex-wrap:wrap;}
+.trust-badge{background:var(--cream);border:1px solid #ece7de;border-radius:6px;padding:8px 12px;display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600;color:var(--navy);}
+.trust-badge svg{stroke:var(--gold);flex-shrink:0;}
+
+/* FOOTER */
+footer{background:#07101f;color:rgba(255,255,255,.55);padding:72px 0 0;}
+.footer-grid{max-width:1280px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:2fr 1fr 1fr 1.5fr;gap:60px;}
+.foot-name{font-family:'Cormorant Garamond',serif;font-size:26px;color:white;margin-bottom:4px;}
+.foot-sub{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;}
+footer p{font-size:13.5px;line-height:1.75;font-weight:300;}
+.foot-social{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap;}
+.social-btn{width:38px;height:38px;border:1px solid rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.55);text-decoration:none;transition:border-color .25s,color .25s,background .25s,transform .3s cubic-bezier(.34,1.56,.64,1);}
+.social-btn:hover{transform:translateY(-3px) scale(1.12);}
+.social-btn[aria-label="Facebook"]:hover{background:#1877f2;border-color:#1877f2;color:white;}
+.social-btn[aria-label="Instagram"]:hover{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);border-color:#e1306c;color:white;}
+.social-btn[aria-label="X (Twitter)"]:hover{background:#000;border-color:#555;color:white;}
+.social-btn[aria-label="LinkedIn"]:hover{background:#0a66c2;border-color:#0a66c2;color:white;}
+.social-btn[aria-label="YouTube"]:hover{background:#ff0000;border-color:#ff0000;color:white;}
+.foot-col h4{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:white;margin-bottom:18px;}
+.foot-links{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.foot-links a{color:rgba(255,255,255,.5);text-decoration:none;font-size:13.5px;transition:color .2s;}
+.foot-links a:hover{color:var(--gold-light);}
+.contact-row-ft{display:flex;align-items:flex-start;gap:10px;margin-bottom:13px;font-size:13.5px;}
+.contact-row-ft svg{margin-top:2px;flex-shrink:0;opacity:.5;}
+.emerg-box{background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.3);border-radius:4px;padding:13px 16px;margin-top:18px;}
+.emerg-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#e74c3c;margin-bottom:5px;}
+.emerg-num{font-family:'Cormorant Garamond',serif;font-size:26px;color:white;font-weight:300;}
+.footer-bottom{max-width:1280px;margin:48px auto 0;padding:22px 40px;border-top:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between;align-items:center;font-size:12px;color:rgba(255,255,255,.3);}
+.footer-bottom a{color:inherit;text-decoration:none;}
+.footer-bottom a:hover{color:var(--gold);}
+
+/* FABs */
+.scroll-top{position:fixed;bottom:32px;right:32px;width:44px;height:44px;background:var(--navy);border:1px solid rgba(184,148,90,.45);border-radius:50%;color:var(--gold);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:500;opacity:0;transform:translateY(16px) scale(.85);transition:opacity .35s,transform .35s cubic-bezier(.34,1.56,.64,1),background .2s;box-shadow:0 4px 20px rgba(10,22,40,.3);}
+.scroll-top.show{opacity:1;transform:translateY(0) scale(1);}
+.scroll-top:hover{background:var(--gold);color:var(--navy);border-color:var(--gold);}
+.wa-btn{position:fixed;bottom:32px;left:32px;z-index:500;display:flex;align-items:center;background:#25d366;border-radius:50px;overflow:hidden;max-width:52px;text-decoration:none;box-shadow:0 4px 20px rgba(37,211,102,.4);transition:max-width .4s cubic-bezier(.34,1.56,.64,1),box-shadow .3s,transform .3s;}
+.wa-btn:hover{max-width:210px;box-shadow:0 8px 28px rgba(37,211,102,.55);transform:translateY(-2px);}
+.wa-btn::before{content:'';position:absolute;inset:0;border-radius:50px;animation:wa-pulse 2.5s ease-out infinite;pointer-events:none;}
+@keyframes wa-pulse{0%{box-shadow:0 0 0 0 rgba(37,211,102,.45)}70%{box-shadow:0 0 0 12px rgba(37,211,102,0)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}}
+.fab-icon{width:52px;height:52px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.fab-label{color:white;font-size:13px;font-weight:600;white-space:nowrap;padding-right:18px;opacity:0;transition:opacity .2s ease .15s;}
+.wa-btn:hover .fab-label{opacity:1;}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .nav-links{display:none;}
+  .nav-hamburger{display:flex;}
+  .nav-links.mobile-open{display:flex;flex-direction:column;position:absolute;top:76px;left:0;right:0;background:white;border-top:1px solid #e8e2d8;border-bottom:2px solid var(--gold);padding:16px 24px 24px;gap:4px;box-shadow:0 12px 40px rgba(10,22,40,.12);z-index:99;}
+  .nav-links.mobile-open>li>a{padding:12px 16px;font-size:15px;border-radius:6px;}
+  .nav-links.mobile-open .nav-cta{margin-top:8px;text-align:center;padding:14px 22px!important;}
+  .booking-layout{grid-template-columns:1fr;gap:32px;}
+  .booking-sidebar{position:static;display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:40px;padding:0 32px;}
+  .footer-bottom{padding:22px 32px;flex-direction:column;gap:12px;text-align:center;}
+}
+@media(max-width:640px){
+  .topbar-left{display:none;}
+  .topbar-right{width:100%;justify-content:center;font-size:11px;padding:5px 12px;}
+  .nav-inner{padding:0 16px;height:64px;}
+  .nav-links.mobile-open{top:64px;padding:12px 16px 20px;}
+  .page-hero{padding:48px 0 40px;}
+  .hero-inner,.setup-inner{padding:0 16px;}
+  .page-hero h1{font-size:clamp(30px,8vw,40px);}
+  .booking-section{padding:40px 0 60px;}
+  .booking-layout{padding:0 16px;}
+  .form-panels{padding:24px 20px 20px;}
+  .step-header{padding:20px 20px;}
+  .step-label{display:none;}
+  .form-row{grid-template-columns:1fr;}
+  .appt-cards{grid-template-columns:1fr;}
+  .time-grid{grid-template-columns:repeat(3,1fr);}
+  .booking-sidebar{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr;gap:28px;padding:0 16px;}
+  .footer-bottom{padding:16px;flex-direction:column;gap:10px;text-align:center;}
+  .scroll-top{bottom:18px;right:14px;width:40px;height:40px;font-size:16px;}
+  .wa-btn{bottom:18px;left:14px;max-width:44px;}
+  .fab-icon{width:44px!important;height:44px!important;}
+}
+</style>
+</head>
+<body>
+
+<button class="scroll-top" id="scrollTop">&#8593;</button>
+<a class="wa-btn" href="https://wa.me/447400000000" target="_blank" rel="noopener" aria-label="WhatsApp">
+  <span class="fab-icon"><svg width="26" height="26" viewBox="0 0 32 32" fill="white"><path d="M16 1C7.716 1 1 7.716 1 16c0 2.628.676 5.1 1.864 7.254L1 31l7.95-1.832A14.938 14.938 0 0 0 16 31c8.284 0 15-6.716 15-15S24.284 1 16 1zm0 27.4a12.34 12.34 0 0 1-6.3-1.726l-.452-.268-4.716 1.088 1.12-4.6-.296-.472A12.36 12.36 0 0 1 3.6 16C3.6 9.146 9.146 3.6 16 3.6S28.4 9.146 28.4 16 22.854 28.4 16 28.4zm6.77-9.232c-.37-.186-2.19-1.08-2.53-1.202-.34-.124-.586-.186-.832.186-.248.37-.958 1.202-1.174 1.45-.216.248-.432.278-.802.092-.37-.186-1.562-.576-2.976-1.836-1.1-.98-1.842-2.19-2.058-2.56-.216-.37-.022-.57.162-.754.166-.166.37-.432.556-.648.186-.216.248-.37.37-.618.124-.248.062-.464-.03-.65-.094-.186-.834-2.008-1.142-2.748-.3-.72-.606-.622-.834-.634-.216-.01-.464-.012-.71-.012a1.36 1.36 0 0 0-.988.464c-.34.37-1.296 1.266-1.296 3.088s1.328 3.582 1.512 3.83c.186.248 2.612 3.99 6.332 5.594.884.382 1.574.61 2.11.78.886.282 1.692.242 2.33.146.71-.106 2.19-.896 2.5-1.76.308-.864.308-1.606.216-1.76-.09-.154-.338-.248-.708-.432z"/></svg></span>
+  <span class="fab-label">Chat with us</span>
+</a>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-left">
+      <div class="topbar-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span>14 Harley Street, London W1G 9PH</span></div>
+      <div class="topbar-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l.82-.82a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 17v-.08z"/></svg><a href="tel:0504209812">0504209812</a></div>
+      <div class="topbar-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><a href="mailto:info@meridianmedical.co.uk">info&#64;meridianmedical.co.uk</a></div>
+    </div>
+    <div class="topbar-right"><span class="emergency-dot"></span>24/7 EMERGENCY: 0504209812</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-inner">
+    <a href="hospital-website.html" class="logo">
+      <div class="logo-mark" style="background:none;padding:0;">
+        <svg viewBox="0 0 44 44" fill="none" width="44" height="44"><rect width="44" height="44" rx="6" fill="#0a1628"/><rect x="18" y="7" width="8" height="30" rx="2" fill="#b8945a"/><rect x="7" y="18" width="30" height="8" rx="2" fill="#b8945a"/><rect x="18" y="18" width="8" height="8" rx="1" fill="white"/></svg>
+      </div>
+     <div class="logo-text">
+        <span class="logo-name">Meridian</span>
+        <div class="logo-text-sep"></div>
+        <span class="logo-sub">Medical Centre</span>
+      </div>
+    </a>
+    <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+        <ul class="nav-links" id="navLinks">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="about us.html">About Us</a></li>
+      <li><a href="services.html">Our Services</a></li>
+      <li><a href="facilities.html">Facilities</a></li>
+      <li><a href="doctors.html">Our Doctors</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="booking.html" class="nav-cta">Book Appointment</a></li>
+    </ul>
+  </div>
+  <div class="scroll-progress" id="scrollProgress"></div>
+</nav>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="hospital-website.html">Home</a><span style="opacity:.4">›</span><span class="breadcrumb-current">Book Appointment</span></div>
+    <h1>Book your<br><em>appointment</em> online</h1>
+    <p class="hero-desc">Fill in the short form below and our team will confirm your appointment via email or phone within 2 hours.</p>
+  </div>
+</section>
+
+
+
+<!-- BOOKING SECTION -->
+<section class="booking-section">
+  <div class="booking-layout">
+
+    <!-- MULTI-STEP FORM -->
+    <div class="booking-form-wrap">
+
+      <!-- STEP PROGRESS BAR -->
+      <div class="step-header">
+        <div class="step-progress">
+          <div class="step-item active" id="si1">
+            <div class="step-circle">1</div>
+            <span class="step-label">Your Details</span>
+          </div>
+          <div class="step-line"></div>
+          <div class="step-item" id="si2">
+            <div class="step-circle">2</div>
+            <span class="step-label">Appointment</span>
+          </div>
+          <div class="step-line"></div>
+          <div class="step-item" id="si3">
+            <div class="step-circle">3</div>
+            <span class="step-label">Date &amp; Time</span>
+          </div>
+          <div class="step-line"></div>
+          <div class="step-item" id="si4">
+            <div class="step-circle">4</div>
+            <span class="step-label">Review</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FORM PANELS — submitted to Formspree -->
+      <form id="bookingForm"
+            action="https://api.web3forms.com/submit"
+            method="POST">
+
+        <input type="hidden" name="access_key" value="aa0e456c-6b19-4e39-bea4-d69ea3a56cab">
+        <input type="hidden" name="subject" value="New Appointment Booking — Meridian Hospital">
+        <input type="hidden" name="from_name" value="Meridian Hospital Booking Form">
+        <div class="form-panels">
+
+          <!-- STEP 1: Personal Details -->
+          <div class="form-panel active" id="panel1">
+            <div class="panel-title">Your Details</div>
+            <p class="panel-desc">Tell us a little about yourself so we can personalise your visit.</p>
+            <div class="form-row">
+              <div class="form-group">
+                <label>First Name <span class="req">*</span></label>
+                <input type="text" name="first_name" id="f_first" placeholder="e.g. John" autocomplete="given-name">
+                <span class="err-msg" id="err_first">Please enter your first name.</span>
+              </div>
+              <div class="form-group">
+                <label>Last Name <span class="req">*</span></label>
+                <input type="text" name="last_name" id="f_last" placeholder="e.g. Mensah" autocomplete="family-name">
+                <span class="err-msg" id="err_last">Please enter your last name.</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Email Address <span class="req">*</span></label>
+                <input type="email" name="email" id="f_email" placeholder="john@example.com" autocomplete="email">
+                <span class="err-msg" id="err_email">Please enter a valid email address.</span>
+              </div>
+              <div class="form-group">
+                <label>Phone Number <span class="req">*</span></label>
+                <input type="tel" name="phone" id="f_phone" placeholder="+44 7400 000000" autocomplete="tel">
+                <span class="err-msg" id="err_phone">Please enter a phone number.</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Date of Birth</label>
+                <input type="date" name="dob" id="f_dob">
+              </div>
+              <div class="form-group">
+                <label>Gender</label>
+                <select name="gender" id="f_gender">
+                  <option value="" disabled selected>Select…</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                  <option>Non-binary</option>
+                  <option>Prefer not to say</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-nav">
+              <span></span>
+              <button type="button" class="btn-next" id="next1">Next Step <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+            </div>
+          </div>
+
+          <!-- STEP 2: Appointment Details -->
+          <div class="form-panel" id="panel2">
+            <div class="panel-title">Appointment Type</div>
+            <p class="panel-desc">Select the type of visit and the department you'd like to see.</p>
+            <div class="appt-cards" id="apptCards">
+              <label class="appt-card selected">
+                <input type="radio" name="appt_type" value="In-Person Consultation" checked>
+                <span class="appt-card-icon">🏥</span>
+                <div class="appt-card-label">In-Person</div>
+                <div class="appt-card-note">Visit our clinic</div>
+              </label>
+              <label class="appt-card">
+                <input type="radio" name="appt_type" value="Video Consultation">
+                <span class="appt-card-icon">💻</span>
+                <div class="appt-card-label">Video Call</div>
+                <div class="appt-card-note">From home</div>
+              </label>
+              <label class="appt-card">
+                <input type="radio" name="appt_type" value="Phone Consultation">
+                <span class="appt-card-icon">📞</span>
+                <div class="appt-card-label">Phone Call</div>
+                <div class="appt-card-note">Quick consult</div>
+              </label>
+            </div>
+            <div class="form-group">
+              <label>Department / Specialty <span class="req">*</span></label>
+              <select name="department" id="f_dept">
+                <option value="" disabled selected>Select a department…</option>
+                <option>General Consultation</option>
+                <option>Cardiology</option>
+                <option>Emergency</option>
+                <option>Internal Medicine</option>
+                <option>Maternity &amp; Gynaecology</option>
+                <option>Neurology</option>
+                <option>Orthopaedics</option>
+                <option>Paediatrics</option>
+                <option>Radiology &amp; Imaging</option>
+                <option>Surgery</option>
+                <option>Other</option>
+              </select>
+              <span class="err-msg" id="err_dept">Please select a department.</span>
+            </div>
+            <div class="form-group">
+              <label>Preferred Doctor (optional)</label>
+              <select name="doctor">
+                <option value="" selected>No preference</option>
+                <option>Dr. Sarah Okonkwo — Cardiology</option>
+                <option>Dr. Kwame Mensah — Cardiology</option>
+                <option>Prof. James Adeyemi — Surgery</option>
+                <option>Dr. Amara Diallo — Surgery</option>
+                <option>Dr. Michael Chen — Paediatrics</option>
+                <option>Dr. Priya Sharma — Maternity</option>
+                <option>Dr. Yusuf Ibrahim — Neurology</option>
+                <option>Dr. Samuel Boateng — Orthopaedics</option>
+                <option>Dr. Kofi Asante — Internal Medicine</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Reason for Visit</label>
+              <textarea name="reason" id="f_reason" placeholder="Briefly describe your symptoms or reason for the appointment…"></textarea>
+            </div>
+            <div class="form-nav">
+              <button type="button" class="btn-back" id="back2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back</button>
+              <button type="button" class="btn-next" id="next2">Next Step <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+            </div>
+          </div>
+
+          <!-- STEP 3: Date & Time -->
+          <div class="form-panel" id="panel3">
+            <div class="panel-title">Date &amp; Time</div>
+            <p class="panel-desc">Choose your preferred date and time slot.</p>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Preferred Date <span class="req">*</span></label>
+                <input type="date" name="preferred_date" id="f_date">
+                <span class="err-msg" id="err_date">Please select a date.</span>
+              </div>
+              <div class="form-group">
+                <label>Preferred Time Slot <span class="req">*</span></label>
+                <input type="hidden" name="preferred_time" id="f_time_hidden" value="">
+                <div class="time-grid" id="timeGrid">
+                  <button type="button" class="time-btn" data-time="8:00 AM">8:00 AM</button>
+                  <button type="button" class="time-btn" data-time="8:30 AM">8:30 AM</button>
+                  <button type="button" class="time-btn" data-time="9:00 AM">9:00 AM</button>
+                  <button type="button" class="time-btn" data-time="9:30 AM">9:30 AM</button>
+                  <button type="button" class="time-btn" data-time="10:00 AM">10:00 AM</button>
+                  <button type="button" class="time-btn" data-time="10:30 AM">10:30 AM</button>
+                  <button type="button" class="time-btn" data-time="11:00 AM">11:00 AM</button>
+                  <button type="button" class="time-btn unavailable" data-time="11:30 AM">11:30 AM</button>
+                  <button type="button" class="time-btn unavailable" data-time="12:00 PM">12:00 PM</button>
+                  <button type="button" class="time-btn" data-time="2:00 PM">2:00 PM</button>
+                  <button type="button" class="time-btn" data-time="2:30 PM">2:30 PM</button>
+                  <button type="button" class="time-btn" data-time="3:00 PM">3:00 PM</button>
+                  <button type="button" class="time-btn" data-time="3:30 PM">3:30 PM</button>
+                  <button type="button" class="time-btn unavailable" data-time="4:00 PM">4:00 PM</button>
+                  <button type="button" class="time-btn" data-time="4:30 PM">4:30 PM</button>
+                  <button type="button" class="time-btn" data-time="5:00 PM">5:00 PM</button>
+                </div>
+                <span class="err-msg" id="err_time">Please select a time slot.</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Insurance / Payment Method</label>
+              <select name="payment">
+                <option value="" disabled selected>Select…</option>
+                <option>Private Pay (Self-funded)</option>
+                <option>NHIS (National Health Insurance)</option>
+                <option>AXA Health</option>
+                <option>BUPA</option>
+                <option>Aviva</option>
+                <option>Vitality Health</option>
+                <option>Other Insurance</option>
+              </select>
+            </div>
+            <div class="form-nav">
+              <button type="button" class="btn-back" id="back3"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back</button>
+              <button type="button" class="btn-next" id="next3">Review Booking <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+            </div>
+          </div>
+
+          <!-- STEP 4: Review & Submit -->
+          <div class="form-panel" id="panel4">
+            <div class="panel-title">Review &amp; Confirm</div>
+            <p class="panel-desc">Please check your details before submitting.</p>
+            <div class="review-box">
+              <h4>Patient Details</h4>
+              <div class="review-row"><span class="review-label">Name</span><span class="review-val" id="rv_name">—</span></div>
+              <div class="review-row"><span class="review-label">Email</span><span class="review-val" id="rv_email">—</span></div>
+              <div class="review-row"><span class="review-label">Phone</span><span class="review-val" id="rv_phone">—</span></div>
+            </div>
+            <div class="review-box">
+              <h4>Appointment Details</h4>
+              <div class="review-row"><span class="review-label">Type</span><span class="review-val" id="rv_type">—</span></div>
+              <div class="review-row"><span class="review-label">Department</span><span class="review-val" id="rv_dept">—</span></div>
+              <div class="review-row"><span class="review-label">Date</span><span class="review-val" id="rv_date">—</span></div>
+              <div class="review-row"><span class="review-label">Time</span><span class="review-val" id="rv_time">—</span></div>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="f_consent" name="consent" value="Agreed">
+              <label for="f_consent">I agree to Meridian Hospital's <a href="#">Privacy Policy</a> and consent to be contacted about my appointment.</label>
+            </div>
+            <span class="err-msg" id="err_consent">Please accept the Privacy Policy to continue.</span>
+            <div class="form-nav">
+              <button type="button" class="btn-back" id="back4"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back</button>
+              <button type="submit" class="btn-submit" id="submitBtn">Confirm Booking <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+            </div>
+          </div>
+
+        </div><!-- /form-panels -->
+
+      </form><!-- /form -->
+
+      <!-- SUCCESS SCREEN (shown after successful Formspree redirect-less submission) -->
+      <div class="success-screen" id="successScreen">
+        <div class="success-check"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <h2>Booking Confirmed!</h2>
+        <p>Thank you! Your appointment request has been received. We will confirm your booking via email or phone within 2 working hours.</p>
+        <div class="success-ref">
+          <span>Booking Reference</span>
+          <strong id="bookingRef">—</strong>
+        </div>
+        <br>
+        <a href="hospital-website.html" class="btn-home">Return to Home</a>
+      </div>
+
+    </div><!-- /booking-form-wrap -->
+
+    <!-- SIDEBAR -->
+    <aside class="booking-sidebar">
+      <div class="sidebar-card">
+        <h3>What to expect</h3>
+        <ul class="sidebar-list">
+          <li><div class="sidebar-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>We confirm within 2 hours by phone or email</li>
+          <li><div class="sidebar-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>You'll receive a booking reference and instructions</li>
+          <li><div class="sidebar-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>Bring a valid ID and your insurance card</li>
+          <li><div class="sidebar-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>Free parking available on arrival</li>
+          <li><div class="sidebar-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>Cancellations accepted up to 24hrs before</li>
+        </ul>
+      </div>
+      <div class="sidebar-card contact-card">
+        <h3>Need help?</h3>
+        <div class="contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l.82-.82a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 17v-.08z"/></svg><a href="tel:0504209812">0504209812</a></div>
+        <div class="contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><a href="mailto:info@meridianmedical.co.uk">info&#64;meridianmedical.co.uk</a></div>
+        <div class="emerg-mini">
+          <div class="emerg-mini-dot"></div>
+          <div class="emerg-mini-text"><strong>0504209812</strong>Emergency line — 24/7</div>
+        </div>
+      </div>
+      <div class="sidebar-card">
+        <h3>Accreditations</h3>
+        <div class="trust-badges">
+          <div class="trust-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>ISO 9001</div>
+          <div class="trust-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>COHSASA</div>
+          <div class="trust-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>GHS Certified</div>
+          <div class="trust-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>99% Rated</div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="foot-name">Meridian Hospital</div>
+      <div class="foot-sub">Quality Healthcare</div>
+      <p>A multi-disciplinary private healthcare facility dedicated to the best possible clinical outcomes.</p>
+      <div class="foot-social">
+        <a href="#" class="social-btn" aria-label="Facebook"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+        <a href="#" class="social-btn" aria-label="Instagram"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+        <a href="#" class="social-btn" aria-label="X (Twitter)"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <a href="#" class="social-btn" aria-label="LinkedIn"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+        <a href="#" class="social-btn" aria-label="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.95C5.12 20 12 20 12 20s6.88 0 8.59-.47a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#07101f"/></svg></a>
+      </div>
+    </div>
+    <div class="foot-col"><h4>Quick Links</h4><ul class="foot-links"><li><a href="hospital-website.html">Home</a></li><li><a href="about.html">About Us</a></li><li><a href="services.html">Our Services</a></li><li><a href="facilities.html">Facilities</a></li><li><a href="doctors.html">Our Doctors</a></li><li><a href="gallery.html">Gallery</a></li></ul></div>
+    <div class="foot-col"><h4>Departments</h4><ul class="foot-links"><li><a href="#">Emergency</a></li><li><a href="#">Cardiology</a></li><li><a href="#">Maternity</a></li><li><a href="#">Paediatrics</a></li><li><a href="#">Surgery</a></li><li><a href="#">Pharmacy</a></li></ul></div>
+    <div class="foot-col"><h4>Contact</h4>
+      <div class="contact-row-ft"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span>14 Harley Street,<br>London W1G 9PH</span></div>
+      <div class="contact-row-ft"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l.82-.82a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 17v-.08z"/></svg><span>0504209812</span></div>
+      <div class="emerg-box"><div class="emerg-label">⚡ Emergency</div><div class="emerg-num">0504209812</div></div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Meridian Hospital. All rights reserved.</span>
+    <div style="display:flex;gap:20px;"><a href="#">Privacy Policy</a><a href="#">Terms of Use</a><a href="#">Accessibility</a></div>
+  </div>
+</footer>
+
+<script>
+// ── NAV ─────────────────────────────────────────────
+var hamburger = document.getElementById('hamburger');
+var navLinks  = document.getElementById('navLinks');
+hamburger.addEventListener('click', function() {
+  hamburger.classList.toggle('open');
+  navLinks.classList.toggle('mobile-open');
+});
+navLinks.querySelectorAll('a').forEach(function(a) {
+  a.addEventListener('click', function() {
+    hamburger.classList.remove('open');
+    navLinks.classList.remove('mobile-open');
+  });
+});
+var mainNav = document.getElementById('mainNav');
+var scrollPrg = document.getElementById('scrollProgress');
+window.addEventListener('scroll', function() {
+  mainNav.classList.toggle('scrolled', window.scrollY > 60);
+  scrollPrg.style.width = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100 + '%';
+}, { passive: true });
+var stBtn = document.getElementById('scrollTop');
+window.addEventListener('scroll', function() { stBtn.classList.toggle('show', window.scrollY > 400); }, { passive: true });
+stBtn.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+// ── MULTI-STEP FORM ──────────────────────────────────
+var currentStep = 1;
+
+function showStep(step) {
+  document.querySelectorAll('.form-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('panel' + step).classList.add('active');
+  // Update step indicators
+  for (var i = 1; i <= 4; i++) {
+    var si = document.getElementById('si' + i);
+    si.classList.remove('active', 'done');
+    if (i < step)  si.classList.add('done');
+    if (i === step) si.classList.add('active');
+  }
+  currentStep = step;
+  document.querySelector('.booking-form-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function setErr(id, show) {
+  var el = document.getElementById(id);
+  if (el) { el.classList.toggle('show', show); }
+}
+function markField(id, error) {
+  var el = document.getElementById(id);
+  if (el) { el.classList.toggle('error', error); }
+}
+
+// Step 1 validation
+document.getElementById('next1').addEventListener('click', function() {
+  var first = document.getElementById('f_first').value.trim();
+  var last  = document.getElementById('f_last').value.trim();
+  var email = document.getElementById('f_email').value.trim();
+  var phone = document.getElementById('f_phone').value.trim();
+  var ok = true;
+  if (!first) { markField('f_first', true); setErr('err_first', true); ok = false; } else { markField('f_first', false); setErr('err_first', false); }
+  if (!last)  { markField('f_last',  true); setErr('err_last',  true); ok = false; } else { markField('f_last',  false); setErr('err_last',  false); }
+  if (!email || !/\S+@\S+\.\S+/.test(email)) { markField('f_email', true); setErr('err_email', true); ok = false; } else { markField('f_email', false); setErr('err_email', false); }
+  if (!phone) { markField('f_phone', true); setErr('err_phone', true); ok = false; } else { markField('f_phone', false); setErr('err_phone', false); }
+  if (ok) showStep(2);
+});
+
+// Step 2 validation
+document.getElementById('back2').addEventListener('click', function() { showStep(1); });
+document.getElementById('next2').addEventListener('click', function() {
+  var dept = document.getElementById('f_dept').value;
+  if (!dept) { markField('f_dept', true); setErr('err_dept', true); return; }
+  markField('f_dept', false); setErr('err_dept', false);
+  showStep(3);
+});
+
+// Appointment type card selection
+document.querySelectorAll('.appt-card').forEach(function(card) {
+  card.addEventListener('click', function() {
+    document.querySelectorAll('.appt-card').forEach(function(c) { c.classList.remove('selected'); });
+    this.classList.add('selected');
+  });
+});
+
+// Step 3 validation
+document.getElementById('back3').addEventListener('click', function() { showStep(2); });
+document.getElementById('next3').addEventListener('click', function() {
+  var date = document.getElementById('f_date').value;
+  var time = document.getElementById('f_time_hidden').value;
+  var ok = true;
+  if (!date) { markField('f_date', true); setErr('err_date', true); ok = false; } else { markField('f_date', false); setErr('err_date', false); }
+  if (!time) { setErr('err_time', true); ok = false; } else { setErr('err_time', false); }
+  if (!ok) return;
+  // Populate review panel
+  var first = document.getElementById('f_first').value;
+  var last  = document.getElementById('f_last').value;
+  var apptType = document.querySelector('.appt-card.selected input') ? document.querySelector('.appt-card.selected input').value : '';
+  var dept     = document.getElementById('f_dept').value;
+  var dateVal  = document.getElementById('f_date').value;
+  var dateDisp = dateVal ? new Date(dateVal + 'T00:00').toLocaleDateString('en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric' }) : '—';
+  document.getElementById('rv_name').textContent  = first + ' ' + last;
+  document.getElementById('rv_email').textContent = document.getElementById('f_email').value;
+  document.getElementById('rv_phone').textContent = document.getElementById('f_phone').value;
+  document.getElementById('rv_type').textContent  = apptType;
+  document.getElementById('rv_dept').textContent  = dept;
+  document.getElementById('rv_date').textContent  = dateDisp;
+  document.getElementById('rv_time').textContent  = time;
+  showStep(4);
+});
+
+// Time slot buttons
+document.querySelectorAll('.time-btn:not(.unavailable)').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.time-btn').forEach(function(b) { b.classList.remove('selected'); });
+    this.classList.add('selected');
+    document.getElementById('f_time_hidden').value = this.getAttribute('data-time');
+    setErr('err_time', false);
+  });
+});
+
+// Step 4 back
+document.getElementById('back4').addEventListener('click', function() { showStep(3); });
+
+// ── FORMSPREE SUBMISSION ─────────────────────────────
+document.getElementById('bookingForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var consent = document.getElementById('f_consent').checked;
+  if (!consent) { setErr('err_consent', true); return; }
+  setErr('err_consent', false);
+
+  var form = this;
+  var submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending…';
+
+  var data = new FormData(form);
+
+  fetch(form.action, {
+    method: 'POST',
+    body: data,
+    headers: { 'Accept': 'application/json' }
+  })
+  .then(function(response) {
+    if (response.ok) {
+      // Success — show success screen
+      document.getElementById('panel4').style.display  = 'none';
+      document.querySelector('.step-header').style.display = 'none';
+      document.getElementById('successScreen').style.display = 'block';
+      // Generate a simple booking reference
+      var ref = 'MH-' + Date.now().toString(36).toUpperCase().slice(-6);
+      document.getElementById('bookingRef').textContent = ref;
+    } else {
+      response.json().then(function(data) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Confirm Booking <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
+        alert(data.message || 'Something went wrong. Please try again or call us directly.');
+      });
+    }
+  })
+  .catch(function() {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = 'Confirm Booking <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0a1628" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
+    alert('Connection error. Please try again or call 0504209812.');
+  });
+});
+
+// Set min date to today
+var today = new Date().toISOString().split('T')[0];
+document.getElementById('f_date').setAttribute('min', today);
+</script>
+</body>
+</html>
